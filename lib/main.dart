@@ -1,12 +1,18 @@
 import 'package:bot_toast/bot_toast.dart';
-import 'package:cloudreve_mobile/layout.dart';
-import 'package:cloudreve_mobile/pages/initialization/initialization.dart';
+import 'package:cloudreve_mobile/common/global.dart';
+import 'package:cloudreve_mobile/routes/login/login.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:provider/provider.dart';
 import 'routes/routes.dart';
 
 void main() {
-  runApp(const MyApp());
+  Global.init().then((e) => runApp(MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => GlobalStore())
+      ],
+      child: const MyApp()
+  )));
 }
 
 class MyApp extends StatelessWidget {
@@ -23,8 +29,28 @@ class MyApp extends StatelessWidget {
       ),
       builder: BotToastInit(),
       routes: routes,
-      initialRoute: '/initialization',
-      home: const Layout(),
+      home: const LoginPage(),
     );
   }
+
 }
+
+
+class GlobalStore with ChangeNotifier, DiagnosticableTreeMixin {
+
+  bool _showBottomBar = true;
+
+  bool get showBottomBar => _showBottomBar;
+
+  void setBottomBarValue(bool val) {
+    _showBottomBar = val;
+    notifyListeners();
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties.add(IntProperty('_showBottomBar', _showBottomBar ? 1 : 0));
+  }
+}
+

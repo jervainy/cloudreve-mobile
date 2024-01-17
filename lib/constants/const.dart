@@ -1,1 +1,0 @@
-const const_server = "const_server";
